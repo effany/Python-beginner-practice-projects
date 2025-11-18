@@ -25,6 +25,5 @@ def random_walk(steps):
 
 random_walk(200)
 
-
 my_screen = Screen()
 my_screen.exitonclick()
