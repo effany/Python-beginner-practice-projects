@@ -46,42 +46,28 @@ news_parameters = {
     'apiKey': os.environ.get("NEWS_API_KEY")
 }
 
-response = (requests.get(stock_url, stock_parameters)).json()
+response = requests.get(stock_url, stock_parameters).json()
+yesterday_price = float(response['Time Series (Daily)'][yesterday]["4. close"])
+day_before_price = float(response['Time Series (Daily)'][day_before_yesterday]["4. close"])
 
-yesterday_closing_price = float(response['Time Series (Daily)'][yesterday]["4. close"])
-day_before_yesterday_closing_price = float(response['Time Series (Daily)'][day_before_yesterday]["4. close"])
+price_diff = yesterday_price - day_before_price
+price_diff_ratio = round((price_diff / day_before_price) * 100, 2)
+direction = "🔺" if price_diff > 0 else "🔻"
 
-
-if yesterday_closing_price > day_before_yesterday_closing_price:
-    stock_direction = "up"
-    print("stock increase")
-    close_price_differences = yesterday_closing_price - day_before_yesterday_closing_price
-elif day_before_yesterday_closing_price > yesterday_closing_price:
-    stock_direction = "down"
-    print("stock decrease")
-    close_price_differences = day_before_yesterday_closing_price - yesterday_closing_price
-
-
-price_differences_ratio = round((close_price_differences / day_before_yesterday_closing_price) * 100, 4)
-
-print(price_differences_ratio)
-
-if abs(price_differences_ratio) > 4: 
+if abs(price_diff_ratio) > 5:
     news_response = requests.get(news_url, news_parameters).json()
-    top_3_news_headline = [news_response["articles"][i]['title'] for i in range(3)] 
-    top_3_news_brief = [news_response["articles"][i]["description"] for i in range(3)]
-    
-    if stock_direction == "up":
-        icon = "🔺"
-    elif stock_direction == "down":
-        icon = "🔻"
-    for i in range(3):
-        message = f"{STOCK} {icon} {price_differences_ratio}% \n Headline: {top_3_news_headline[i]}\n Brief: {top_3_news_brief[i]}"
-        client = Client(account_sid, auth_token)
-        message = client.messages.create(
-        from_='whatsapp:+14155238886',
-        body=f"{message}",
-        to='whatsapp:+420735032331'
+    articles = news_response["articles"][:3]
+    client = Client(account_sid, auth_token)
+    for article in articles:
+        message = (
+            f"{STOCK}: {direction}{abs(price_diff_ratio)}%\n"
+            f"Headline: {article['title']}\n"
+            f"Brief: {article['description']}"
+        )
+        client.messages.create(
+            from_='whatsapp:+14155238886',
+            body=message,
+            to='whatsapp:+420735032331'
         )
    
 
