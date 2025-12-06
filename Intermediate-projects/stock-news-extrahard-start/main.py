@@ -66,7 +66,7 @@ price_differences_ratio = round((close_price_differences / day_before_yesterday_
 
 print(price_differences_ratio)
 
-if abs(price_differences_ratio) > 5: 
+if abs(price_differences_ratio) > 4: 
     news_response = requests.get(news_url, news_parameters).json()
     top_3_news_headline = [news_response["articles"][i]['title'] for i in range(3)] 
     top_3_news_brief = [news_response["articles"][i]["description"] for i in range(3)]
