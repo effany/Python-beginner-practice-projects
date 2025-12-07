@@ -49,7 +49,28 @@ pixel_config = {
     "quantity": "4", 
 }
 
-pixel_response = requests.post(url=pixel_endpoint, json=pixel_config, headers=headers)
+# pixel_response = requests.post(url=pixel_endpoint, json=pixel_config, headers=headers)
 
-print(pixel_response.text)
+# print(pixel_response.text)
 
+## update pixel 
+
+date_to_update = datetime(year=2025, month=12, day=6).strftime("%Y%m%d")
+
+pixel_update_enpoint = f"{pixela_endpoint}/{USERNAME}/graphs/{GRAPH_ID}/{date_to_update}"
+
+update_config = {
+    "quantity": "8"
+}
+
+# update_response = requests.put(url=pixel_update_enpoint, json=update_config, headers=headers)
+
+# print(update_response.text)
+
+# delete pixel 
+date_to_delete = datetime(year=2025, month=12, day=7).strftime("%Y%m%d")
+delete_endpoint = f"{pixela_endpoint}/{USERNAME}/graphs/{GRAPH_ID}/{date_to_delete}"
+
+delete_response = requests.delete(url=delete_endpoint, headers=headers)
+
+print(delete_response.text)
