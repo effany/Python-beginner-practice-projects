@@ -20,8 +20,6 @@ auth_manager = SpotifyOAuth(
     scope="playlist-modify-private playlist-modify-public"
 )
 
-#playlist_add_items(playlist_id, items, position=None)
-
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
 current_user = sp.current_user()['id']
@@ -29,11 +27,8 @@ current_user = sp.current_user()['id']
 playlist = sp.user_playlist_create(current_user, '2025-playlist', public=False, description="python-project-paylist" )
 playlist_id = playlist['id']
 
-
 header = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-
 data = requests.get(headers=header, url = f"https://www.billboard.com/charts/year-end/2025/billboard-global-200/").text
-
 soup = BeautifulSoup(data, "html.parser")
 
 raw_song_titles = soup.find_all(name="h3", id="title-of-a-story")
